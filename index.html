@@ -35,8 +35,11 @@
       .background{transform:translate3d(0,0,0);backface-visibility:hidden}
       .reveal,.reveal.visible{opacity:1;transform:none;transition:none}
       .stage{contain:layout paint;isolation:isolate}
+      .stage:before{box-shadow:none}
       .reactor{touch-action:pan-y;transform:translate3d(-50%,-48%,0);backface-visibility:hidden}
       #core{background:radial-gradient(circle,rgba(255,171,49,.11),transparent 67%);transform:translateZ(0)}
+      .living-status{backdrop-filter:none;box-shadow:none}
+      .duck-picture{filter:none}
       .reactor::before,.reactor::after,.sweep,.wave i{animation:none}
     }
   </style>
@@ -70,16 +73,7 @@
     (() => {
       if (!window.matchMedia('(max-width:600px), (pointer:coarse)').matches) return;
       const nativeFrame = window.requestAnimationFrame.bind(window);
-      let lastCoreFrame = 0;
-      window.requestAnimationFrame = callback => nativeFrame(now => {
-        const wait = 100 - (now - lastCoreFrame);
-        if (wait <= 0) {
-          lastCoreFrame = now;
-          callback(now);
-        } else {
-          window.setTimeout(() => window.requestAnimationFrame(callback), wait);
-        }
-      });
+      window.requestAnimationFrame = callback => callback.name === 'draw' ? 0 : nativeFrame(callback);
     })();
   </script>
 </body>
